@@ -1,1 +1,18 @@
-Name: "{{ recipe.name }}"
+<b>Name:</b> {{ recipe.name }}
+<br>
+{% if recipe.description %}
+    <br>
+    <b>Description:</b>
+<br>
+    <br>
+{{ recipe.description }}
+{% endif %}
+<br>
+<br>
+<b>Ingredients:</b>
+<br>
+<ul>
+    {% for ingredient_object in recipe.ingredientinrecipe_set.all %}
+    <li>{{ ingredient_object.ingredient.name }} - {{ ingredient_object.quantity }} {{ ingredient_object.unit.name }}</li>
+    {% endfor %}
+</ul>
