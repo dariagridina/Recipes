@@ -7,4 +7,4 @@ def get_recipe(request, recipe_id):
     context = {
         'recipe': recipe,
     }
-    return render(request, 'main/recipe.html', context)
+    return render(request, 'main/recipe_bootstrap.html', context)
