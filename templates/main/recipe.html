@@ -16,3 +16,12 @@
     <li>{{ ingredient_object.ingredient.name }} - {{ ingredient_object.quantity }} {{ ingredient_object.unit.name }}</li>
     {% endfor %}
 </ul>
+<br>
+<b>Instruction:</b>
+<br>
+<ol>
+    {% for instruction in recipe.instruction_set.all %}
+        <li>{{ instruction.instruction.order }}{{ instruction.description }}</li>
+    {% endfor %}
+</ol>
+<br>

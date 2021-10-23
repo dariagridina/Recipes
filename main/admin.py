@@ -1,14 +1,19 @@
 from django.contrib import admin
-from main.models import Ingredient, Recipe, IngredientInRecipe, Menu, Unit
+from main.models import Ingredient, Recipe, IngredientInRecipe, Menu, Unit, Instruction
 
 
 class IngredientInRecipeInline(admin.TabularInline):
     model = IngredientInRecipe
 
 
+class InstructionInline(admin.TabularInline):
+    model = Instruction
+
+
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [
-        IngredientInRecipeInline
+        IngredientInRecipeInline,
+        InstructionInline,
     ]
 
 
