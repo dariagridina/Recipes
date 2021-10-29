@@ -1,27 +1,7 @@
-<b>Name:</b> {{ recipe.name }}
-<br>
-{% if recipe.description %}
-    <br>
-    <b>Description:</b>
-<br>
-    <br>
-{{ recipe.description }}
-{% endif %}
-<br>
-<br>
-<b>Ingredients:</b>
-<br>
+<b>All recipes:</b>
 <ul>
-    {% for ingredient_object in recipe.ingredientinrecipe_set.all %}
-    <li>{{ ingredient_object.ingredient.name }} - {{ ingredient_object.quantity }} {{ ingredient_object.unit.name }}</li>
-    {% endfor %}
+    {% for r in all_recipes %}
+        <li>{{ r.name }}</li>
+{% endfor %}
 </ul>
-<br>
-<b>Instruction:</b>
-<br>
-<ol>
-    {% for instruction in recipe.instruction_set.all %}
-        <li>{{ instruction.instruction.order }}{{ instruction.description }}</li>
-    {% endfor %}
-</ol>
-<br>
+

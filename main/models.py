@@ -20,7 +20,7 @@ class Recipe(models.Model):
 class IngredientInRecipe(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    quantity = models.IntegerField(validators=[MinValueValidator(1)])
+    quantity = models.FloatField(validators=[MinValueValidator(0)])
     unit = models.ForeignKey('main.Unit', on_delete=models.PROTECT)
 
 
