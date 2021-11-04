@@ -1,19 +1,28 @@
-from django.shortcuts import render, get_object_or_404, HttpResponse
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView, LogoutView
+from django.views.generic import ListView, DetailView
+
 from main.models import Recipe
 
 
-def list_of_recipes(request):
-    all_recipes = Recipe.objects.all()
-    context = {
-        'all_recipes': all_recipes,
-    }
-    return render(request, 'main/recipe.html', context)
+class RecipeListView(ListView):
+    model = Recipe
 
 
+class RecipeDetailView(DetailView):
+    model = Recipe
 
-def get_recipe(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    context = {
-        'recipe': recipe,
-    }
-    return render(request, 'main/recipe_bootstrap.html', context)
+
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+    authentication_form = AuthenticationForm
+    redirect_authenticated_user = True
+
+    def post(self, request, *args, **kwargs):
+        import pdb; pdb.set_trace()
+        return super(CustomLoginView, self).post(request, *args, **kwargs)
+
+
+class CustomLogoutView(LogoutView):
+    next_page = '/login'
+
