@@ -1,7 +1,7 @@
 <b>All recipes:</b>
 <ul>
     {% for recipe in object_list %}
-        <li>{{ recipe.name }}</li>
+        <li> <a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></li>
 {% endfor %}
 </ul>
 
