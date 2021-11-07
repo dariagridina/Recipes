@@ -9,7 +9,3 @@ class RecipeListView(ListView):
 
 class RecipeDetailView(DetailView):
     model = Recipe
-
-class BaseHtmlOpen(TemplateView):
-    template_name = 'base.html'
-
