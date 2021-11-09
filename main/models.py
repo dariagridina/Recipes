@@ -12,6 +12,7 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField(max_length=4096, null=True, blank=True)
+    image = models.ImageField(upload_to='recipe/images/', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -38,6 +39,7 @@ class Instruction(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     order = models.IntegerField()
     description = models.TextField(max_length=512)
+
 
     def __str__(self):
         return self.description

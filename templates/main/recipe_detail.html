@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     {{recipe.name}}
@@ -20,8 +21,12 @@
         <div class="row mb-3">
             <div class="col-4">
                 <figure class="figure">
-                    <img src="https://www.kitchensanctuary.com/wp-content/uploads/2020/05/Honey-Garlic-Baked-Salmon-tall-FS-72.webp"  class="figure-img img-fluid rounded" alt="file:///C:/Users/dasha/OneDrive/Pulpit/Honey-Garlic-Baked-Salmon-tall-FS-72.webp">
-                    <figcaption class="figure-caption">{{recipe.name}}</figcaption>
+                    {% if recipe.image %}
+                        <img src='{{ recipe.image.url }}' class="figure-img img-fluid rounded">
+                        <figcaption class="figure-caption">{{recipe.name}}</figcaption>
+                        {% else %}
+                        <img src='{% static 'placeholder.jpg' %}' class="figure-img img-fluid rounded">
+                    {% endif %}
                 </figure>
             </div>
             <div class="col-8">
