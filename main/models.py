@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinValueValidator
 
@@ -13,6 +14,9 @@ class Recipe(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField(max_length=4096, null=True, blank=True)
     image = models.ImageField(upload_to='recipe/images/', null=True, blank=True)
+    favourites = models.ManyToManyField(
+        User, related_name='favourite', default=None, blank=True
+    )
 
     def __str__(self):
         return self.name
