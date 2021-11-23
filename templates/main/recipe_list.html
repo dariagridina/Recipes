@@ -7,17 +7,28 @@
 
 {% block css %}
     <style>
-    figure {
-        max-width: 100%;
-        height: 246px;
-        overflow:hidden;
-    }
-    img.recipe-image {
-        min-width:100%;
-    }
-    div.recipe-card {
-        height: 280px;
-    }
+        .button-container{
+            display:inline-block;
+        }
+
+        .button-container a{
+            position: absolute;
+            top:0.5em;
+            right:0.5em;
+            font-size:xx-large;
+            color: white;
+        }
+        figure {
+            max-width: 100%;
+            height: 246px;
+            overflow:hidden;
+        }
+        img.recipe-image {
+            min-width:100%;
+        }
+        div.recipe-card {
+            height: 280px;
+        }
     </style>
 {% endblock %}
 
@@ -31,8 +42,29 @@
                             <figure class="figure" >
                                 {% if recipe.image %}
                                     <img src='{{ recipe.image.url }}' class="figure-img img-fluid rounded recipe-image">
+                                    {% if request.user.is_authenticated %}
+
+                                        <div class="button-container">
+                                            {% if recipe in favourite_recipes %}
+                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks-fill"></i></a>
+                                            {% else %}
+                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 {% else %}
                                     <img src='{% static 'placeholder.jpg' %}' class="figure-img img-fluid rounded recipe-image">
+                                    {% if request.user.is_authenticated %}
+
+                                        <div class="button-container">
+                                            {% if recipe in favourite_recipes %}
+                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks-fill"></i></a>
+                                            {% else %}
+
+                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
                             </figure>
 

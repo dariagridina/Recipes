@@ -5,11 +5,43 @@
     {{recipe.name}}
 {% endblock %}
 
+{% block css %}
+    <style>
+        .button-container a{
+            font-size:xx-large;
+            color: green;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="container">
-        <div class="row mb-3">
-            <div class="col-10"><p class="h1">{{ recipe.name }}</p></div>
-            <div class="col-2"><button type="button" class="btn btn-outline-success">Save</button></div>
+        <div class="row mb-3 ">
+            <div class="col-10">
+                <p class="h1">{{ recipe.name }}</p>
+            </div>
+
+            {% if request.user.is_authenticated %}
+                {% if is_favourite %}
+                    <div class="col-2">
+                        <div class="button-container">
+                            <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks-fill"></i></a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-2">
+                        <div class="button-container">
+                            <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks"></i></a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="col-2">
+                    <div class="button-container">
+                        <a href="{% url 'sign_up' %}"><i class="bi bi-bookmarks"></i></a>
+                    </div>
+                </div>
+            {% endif %}
         </div>
         <div class="row mb-3">
             <div class="col-1"></div>
@@ -24,7 +56,7 @@
                     {% if recipe.image %}
                         <img src='{{ recipe.image.url }}' class="figure-img img-fluid rounded">
                         <figcaption class="figure-caption">{{recipe.name}}</figcaption>
-                        {% else %}
+                    {% else %}
                         <img src='{% static 'placeholder.jpg' %}' class="figure-img img-fluid rounded">
                     {% endif %}
                 </figure>
