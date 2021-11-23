@@ -1,4 +1,3 @@
-from django.contrib.auth import views
 from django.urls import path
 
 from accounts.views import CustomLoginView, CustomLogoutView, RegistrationView
