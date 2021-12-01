@@ -11,16 +11,34 @@
     {% block css%}
     {% endblock %}
 
+    <style>
+        .search-btn {
+            color: #6c757d;
+            border-color: #ced4da;
+            border-right-color: transparent;
+            border-radius: 0rem;
+        }
+        .search-input {
+            display: block;
+            max-width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-left-color: transparent;
+            border-radius: 0rem;
+        }
+    </style>
+
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
 <header class="p-3 mb-3 border-bottom">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
-                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
-            </a>
-
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="{% url 'recipe_list' %}" class="nav-link px-2 link-dark">All recipes</a></li>
                 <li><a href="{% url 'favourite_recipes' %}" class="nav-link px-2 link-dark">Favourites</a></li>
@@ -28,9 +46,16 @@
                 <li><a href="#" class="nav-link px-2 link-dark">Shopping list</a></li>
             </ul>
 
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-            </form>
+            {% if not hide_header_search %}
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" method="get" action="{% url 'recipe_list' %}">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button type="submit" class="btn search-btn"><i class="bi bi-search"></i></button>
+                        </div>
+                        <input type="search" name="name" class="front-control search-input" placeholder="Search..." aria-label="Search">
+                    </div>
+                </form>
+            {% endif %}
 
             <div class="dropdown text-end">
                 <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -47,7 +72,6 @@
         </div>
     </div>
 </header>
-<br>
 {% block body %}
 {% endblock %}
 <!-- Optional JavaScript; choose one of the two! -->
