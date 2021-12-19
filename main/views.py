@@ -1,9 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import View
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import ListView, DetailView, CreateView
 
-from main.forms import SearchForm
+from main.forms import SearchForm, RecipeForm
 from main.models import Recipe
 
 
@@ -57,6 +57,7 @@ class AddFavouritesView(View):
         return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
-class NewRecipeView(TemplateView):
+class NewRecipeView(CreateView):
     model = Recipe
     template_name = 'main/new_recipe.html'
+    form_class = RecipeForm

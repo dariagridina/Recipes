@@ -9,64 +9,73 @@
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8">
-                <h2>Create new recipe</h2>
-                <hr>
-                <br>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Choose a name...">
-                </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Type a description..."></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="formFile" class="form-label">Upload image</label>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
-                <br>
-                <hr>
-                <br>
-                <h4>Ingredients</h4>
-                <br>
-                <div class="row g-2">
-                    <div class="col-md">
-                        <label for="exampleDataList" class="form-label">Ingredient</label>
-                        <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type an ingredient...">
-                        <datalist id="datalistOptions">
-                            <option value="Tomato">
-                            <option value="Salmon">
-                            <option value="Egg">
-                            <option value="Pepper">
-                            <option value="Salt">
-                        </datalist>
+                <form method="post">
+                    {% csrf_token %}
+                    <br>
+                    <h2 align="center">Create new recipe</h2>
+                    <hr>
+                    <br>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="Choose a name...">
                     </div>
-                    <div class="col-md">
-                        <label for="exampleFormControlInput1" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="exampleFormControlInput1">
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" name="description" rows="3" placeholder="Type a description..."></textarea>
                     </div>
-                    <div class="col-md">
-                        <label for="exampleDataList" class="form-label">Unit</label>
-                        <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
-                        <datalist id="datalistOptions">
-                            <option value="item">
-                            <option value="gram">
-                            <option value="ml">
-                            <option value="Tbsp">
-                            <option value="tsp">
-                        </datalist>
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Upload image</label>
+                        <input class="form-control" name="image" type="file" id="formFile">
                     </div>
-                </div>
-                <br>
-                <hr>
-                <br>
-                <h4>Instruction</h4>
-                <br>
-                <div class="mb-3">
-                    <label for="exampleFormControlTextarea1" class="form-label">Step 1</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                </div>
-                <hr>
+                    <br>
+                    <hr>
+                    <br>
+                    <h4>Ingredients</h4>
+                    <br>
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label for="exampleDataList" class="form-label">Ingredient</label>
+                            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type an ingredient...">
+                            <datalist id="datalistOptions">
+                                <option value="Tomato">
+                                <option value="Salmon">
+                                <option value="Egg">
+                                <option value="Pepper">
+                                <option value="Salt">
+                            </datalist>
+                        </div>
+                        <div class="col-md">
+                            <label for="exampleFormControlInput1" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="exampleFormControlInput1">
+                        </div>
+                        <div class="col-md">
+                            <label for="exampleDataList" class="form-label">Unit</label>
+                            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
+                            <datalist id="datalistOptions">
+                                <option value="item">
+                                <option value="gram">
+                                <option value="ml">
+                                <option value="Tbsp">
+                                <option value="tsp">
+                            </datalist>
+                        </div>
+                    </div>
+                    <br>
+                    <hr>
+                    <br>
+                    <h4>Instruction</h4>
+                    <br>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Step 1</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    </div>
+                    <hr>
+                    <div align="center">
+                        <button type="submit" class="btn btn-outline-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-outline-success" >Save</button>
+                    </div>
+                    <hr>
+                </form>
             </div>
             <div class="col-2"></div>
         </div>
