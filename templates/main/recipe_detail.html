@@ -81,7 +81,7 @@
                         <div class="tab-pane fade" id="instructions" role="tabpanel" aria-labelledby="instructions-tab">
                             <ol>
                                 {% for instruction in recipe.instruction_set.all %}
-                                    <li>{{ instruction.instruction.order }} <hr> {{ instruction.description }}</li>
+                                    <li>{{ instruction.instruction.order }} <hr> {{ instruction.step }}</li>
                                 {% endfor %}
                             </ol>
                         </div>

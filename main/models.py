@@ -46,11 +46,10 @@ class Instruction(models.Model):
 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     order = models.IntegerField()
-    description = models.TextField(max_length=512)
-
+    step = models.TextField(max_length=512)
 
     def __str__(self):
-        return self.description
+        return self.step
 
 
 class Unit(models.Model):

@@ -1,9 +1,10 @@
 from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 
-from main.forms import SearchForm, RecipeForm
+from main.forms import SearchForm, RecipeForm, IngredientInRecipeFormSet, IngredientInRecipeForm, InstructionFormSet
 from main.models import Recipe
 
 
@@ -61,3 +62,40 @@ class NewRecipeView(CreateView):
     model = Recipe
     template_name = 'main/new_recipe.html'
     form_class = RecipeForm
+
+    def get_context_data(self, **kwargs):
+        if self.request.POST:
+            kwargs['ingredient_formset'] = IngredientInRecipeFormSet(self.request.POST, prefix='ingredients')
+            kwargs['step_formset'] = InstructionFormSet(self.request.POST, prefix='steps')
+        else:
+            kwargs['ingredient_formset'] = IngredientInRecipeFormSet(prefix='ingredients')
+            kwargs['step_formset'] = InstructionFormSet(prefix='steps')
+        return super(NewRecipeView, self).get_context_data(**kwargs)
+
+    def post(self, request, *args, **kwargs):
+        recipe_form = self.get_form()
+        ingredient_formset = IngredientInRecipeFormSet(request.POST, prefix='ingredients')
+        instruction_formset = InstructionFormSet(request.POST, prefix='steps')
+
+        if recipe_form.is_valid() and ingredient_formset.is_valid() and instruction_formset.is_valid():
+            self.object = recipe_form.save()
+            for form in ingredient_formset:
+                ingredient = form.save(commit=False)
+                ingredient.recipe = self.object
+                ingredient.save()
+
+            for order, form in enumerate(instruction_formset):
+                instruction = form.save(commit=False)
+                instruction.recipe = self.object
+                instruction.order = order
+                instruction.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            pass
+
+    def form_valid(self, form):
+        redirect = super(NewRecipeView, self).form_valid(form)
+        return redirect
+
+    def form_invalid(self, form):
+        return super(NewRecipeView, self).form_invalid(form)
