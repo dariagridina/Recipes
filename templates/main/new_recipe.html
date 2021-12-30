@@ -1,7 +1,30 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     Create new recipe
+{% endblock %}
+
+{% block css%}
+    <style>
+        label{
+            margin-top: 20px;
+        }
+        i.bigger-icon{
+            color: gray;
+            font-size:xx-large;
+        }
+        .ingredient-form{
+            margin-bottom: 50px;
+        }
+        .step-form{
+            margin-bottom: 40px;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "addFormToFormSet.js"%}"></script>
 {% endblock %}
 
 {% block body %}
@@ -16,16 +39,7 @@
                     <hr>
                     <br>
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="Choose a name...">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" name="description" rows="3" placeholder="Type a description..."></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="formFile" class="form-label">Upload image</label>
-                        <input class="form-control" name="image" type="file" id="formFile">
+                        {{ form }}
                     </div>
                     <br>
                     <hr>
@@ -33,21 +47,38 @@
                     <br>
                     {{ ingredient_formset.management_form }}
                     {% for form in ingredient_formset %}
-                        <div class="row g-2">
+                        <div class="row g-2 ingredient-form">
                             {{ form }}
                         </div>
                     {% endfor %}
-                    <br>
+                    <div style="text-align: center">
+                        <i class="bi bi-plus-circle-dotted bigger-icon" id="add-ingredient-form"></i>
+                    </div>
+                    <script>
+                        $('#add-ingredient-form').click(function() {
+                            cloneMore('div.ingredient-form:last', 'ingredient');
+                        });
+                    </script>
                     <hr>
                     <br>
                     <h4>Instruction</h4>
                     <br>
                     {{ step_formset.management_form }}
-                    {% for form in instruction_formset %}
-                        <div class="row g-2">
+                    <br>
+                    {% for form in step_formset %}
+                        <div class="row g-2 step-form">
+                            <span class="step-counter">Step {{ forloop.counter }}:</span>
                             {{ form }}
                         </div>
                     {% endfor %}
+                    <div style="text-align: center">
+                        <i class="bi bi-plus-circle-dotted bigger-icon" id="add-step"></i>
+                    </div>
+                    <script>
+                        $('#add-step').click(function() {
+                            cloneMore('div.step-form:last', 'steps');
+                        });
+                    </script>
                     <hr>
                     <div align="center">
                         <a href="{% url 'recipe_list' %}" type="submit" class="btn btn-outline-secondary">Cancel</a>

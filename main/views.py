@@ -88,14 +88,9 @@ class NewRecipeView(CreateView):
                 instruction = form.save(commit=False)
                 instruction.recipe = self.object
                 instruction.order = order
-                instruction.save()
+                if instruction.step:
+                    instruction.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
-            pass
-
-    def form_valid(self, form):
-        redirect = super(NewRecipeView, self).form_valid(form)
-        return redirect
-
-    def form_invalid(self, form):
-        return super(NewRecipeView, self).form_invalid(form)
+            self.object = None
+            return self.render_to_response(self.get_context_data(form=recipe_form))

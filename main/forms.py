@@ -13,6 +13,13 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = ['name', 'description', 'image']
 
+    def __init__(self, *args, **kwargs):
+        super(RecipeForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['description'].widget.attrs.update({'class': 'form-control'})
+        self.fields['image'].widget.attrs.update({'class': 'form-control'})
+        self.fields['image'].label = 'Upload Image'
+
 
 class IngredientInRecipeForm(forms.ModelForm):
     class Meta:
@@ -34,6 +41,7 @@ class InstructionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(InstructionForm, self).__init__(*args, **kwargs)
         self.fields['step'].widget.attrs.update({'class': 'form-control'})
+        self.fields['step'].label = False
 
 
 IngredientInRecipeFormSet = formset_factory(IngredientInRecipeForm, extra=0, min_num=1, validate_min=True)
