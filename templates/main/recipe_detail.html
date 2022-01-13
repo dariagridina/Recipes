@@ -10,6 +10,13 @@
         .button-container a{
             font-size:xx-large;
             color: green;
+            margin-left: 2cm;
+        }
+        .list-container a{
+            position: relative;
+            font-size: xx-large;
+            color: dimgrey;
+            margin-left: 3cm;
         }
     </style>
 {% endblock %}
@@ -17,32 +24,49 @@
 {% block body %}
     <div class="container">
         <div class="row mb-3 ">
-            <div class="col-10">
+            <div class="col-9">
                 <p class="h1">{{ recipe.name }}</p>
             </div>
 
             {% if request.user.is_authenticated %}
+
+            {% if is_shopping_list %}
+                <div class="col-1">
+                    <div class="list-container">
+                        <a href="{% url 'add_to_shopping_list' recipe.id %}" data-toggle='tooltip' title='Add to shopping list'><i class="bi bi-journal-plus"></i></a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-1">
+                    <div class="list-container">
+                        <a href="{% url 'add_to_shopping_list' recipe.id %}" data-toggle='tooltip' title='Remove from shopping list'><i class="bi bi-journal-check"></i></a>
+                    </div>
+                </div>
+            {% endif %}
+
                 {% if is_favourite %}
-                    <div class="col-2">
+                    <div class="col-1">
                         <div class="button-container">
-                            <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks-fill"></i></a>
+                            <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Remove from favourites'><i class="bi bi-bookmarks-fill"></i></a>
                         </div>
                     </div>
                 {% else %}
-                    <div class="col-2">
+                    <div class="col-1">
                         <div class="button-container">
-                            <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks"></i></a>
+                            <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Add to favourites'><i class="bi bi-bookmarks"></i></a>
                         </div>
                     </div>
                 {% endif %}
+
             {% else %}
-                <div class="col-2">
+                <div class="col-1">
                     <div class="button-container">
                         <a href="{% url 'sign_up' %}"><i class="bi bi-bookmarks"></i></a>
                     </div>
                 </div>
             {% endif %}
         </div>
+
         <div class="row mb-3">
             <div class="col-10">{% if recipe.description %} {{ recipe.description }}
             {% endif %}</div>
@@ -73,7 +97,7 @@
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade active show" id="ingredients" role="tabpanel" aria-labelledby="ingredients-tab">
                             <ul>
-                                {% for ingredient_object in recipe.ingredientinrecipe_set.all %}
+                                {% for ingredient_object in recipe.shoppinglist_set.all %}
                                     <li><strong> {{ ingredient_object.quantity }} {{ ingredient_object.unit.name }}</strong> {{ ingredient_object.ingredient.name }} </li>
                                 {% endfor %}
                             </ul>

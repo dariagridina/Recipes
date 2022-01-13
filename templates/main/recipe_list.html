@@ -60,9 +60,9 @@
 
                                         <div class="button-container">
                                             {% if recipe in favourite_recipes %}
-                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks-fill"></i></a>
+                                                <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Remove from favourites'><i class="bi bi-bookmarks-fill"></i></a>
                                             {% else %}
-                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks"></i></a>
+                                                <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Add to favourites'><i class="bi bi-bookmarks"></i></a>
                                             {% endif %}
                                         </div>
                                     {% endif %}
@@ -72,10 +72,9 @@
 
                                         <div class="button-container">
                                             {% if recipe in favourite_recipes %}
-                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks-fill"></i></a>
+                                                <a href="{% url 'add_to_favourites' recipe.id %}"data-toggle='tooltip' title='Remove from favourites'><i class="bi bi-bookmarks-fill"></i></a>
                                             {% else %}
-
-                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks"></i></a>
+                                                <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Add to favourites'><i class="bi bi-bookmarks"></i></a>
                                             {% endif %}
                                         </div>
                                     {% endif %}

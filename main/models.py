@@ -57,3 +57,14 @@ class Unit(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ShoppingList(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='shopping_list')
+
+
+class ShoppingListElement(models.Model):
+    shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.PROTECT)
+    quantity = models.FloatField()
+    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)

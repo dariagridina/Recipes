@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Shopping list
+{% endblock %}
+
+{% block css %}
+    <style>
+        div.todo-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        div.alignment {
+            justify-content: flex-start;
+        }
+        div.alignment span {
+            margin-left: 1em;
+        }
+        .todo-list {
+            margin: 10px 0
+        }
+        .todo-list .todo-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0;
+            background: #f7f7f7;
+        }
+        .todo-list .todo-item.complete span {
+            text-decoration: line-through
+        }
+        .remove-todo-item {
+            color: lightgrey;
+            visibility: visible;
+        }
+        .remove-todo-item:hover {
+            color: dimgrey;
+        }
+        .todo-item:hover .remove-todo-item {
+            visibility: visible;
+        }
+        div.checker {
+            width: 18px;
+            height: 18px;
+            align-self: center;
+        }
+        div.checker input,
+        div.checker span {
+            width: 18px;
+            height: 18px;
+        }
+        div.checker span {
+            display: -moz-inline-box;
+            display: inline-block;
+            zoom: 1;
+            text-align: center;
+            background-position: 0 -260px;
+        }
+        div.checker, div.checker input, div.checker span {
+            width: 19px;
+            height: 19px;
+        }
+        div.checker {
+            position: relative;
+        }
+        div.button *, div.checker, div.checker *, div.radio *, div.selector *, div.uploader * {
+            margin: 0;
+            padding: 0;
+        }
+        div.checker {
+            display: -moz-inline-box;
+            display: inline-block;
+            zoom: 1;
+            vertical-align: middle;
+        }
+        .card {
+            padding: 25px;
+            margin-bottom: 30px;
+            border: initial;
+            background: #fff;
+            border-radius: calc(.15rem - 1px);
+            box-shadow: 0 1px 15px rgba(0,0,0,0.04), 0 1px 6px rgba(0,0,0,0.04);
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "shoppingList.js" %}"></script>
+{% endblock %}
+
+{% block body %}
+
+    <h3 align="center">Shopping list</h3>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="card card-white">
+                    <div class="card-body">
+                        <form action="javascript:void(0);">
+                            <input type="text" class="form-control add-task" placeholder="Add ingredient...">
+                        </form>
+                        <div class="todo-list">
+                            <div class="todo-item">
+                                <div class="alignment">
+                                    <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="bi bi-x-lg"></i></a>
+                                    <span>Create theme</span>
+                                </div>
+                                <div class="checker"><span class=""><input type="checkbox"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+
+{% endblock %}

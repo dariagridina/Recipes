@@ -30,6 +30,7 @@
             border: 1px solid #ced4da;
             border-left-color: transparent;
             border-radius: 0rem;
+            margin-right: 20px;
         }
     </style>
 
@@ -42,8 +43,7 @@
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="{% url 'recipe_list' %}" class="nav-link px-2 link-dark">All recipes</a></li>
                 <li><a href="{% url 'favourite_recipes' %}" class="nav-link px-2 link-dark">Favourites</a></li>
-                <li><a href="#" class="nav-link px-2 link-dark">Groceries</a></li>
-                <li><a href="#" class="nav-link px-2 link-dark">Shopping list</a></li>
+                <li><a href="{% url 'shopping_list' %}" class="nav-link px-2 link-dark" data-toggle='tooltip' title='Shopping list'>Shopping list</a></li>
             </ul>
 
             {% if not hide_header_search %}

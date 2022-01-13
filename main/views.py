@@ -4,8 +4,8 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 
-from main.forms import SearchForm, RecipeForm, IngredientInRecipeFormSet, IngredientInRecipeForm, InstructionFormSet
-from main.models import Recipe
+from main.forms import SearchForm, RecipeForm, IngredientInRecipeFormSet, InstructionFormSet
+from main.models import Recipe, IngredientInRecipe, ShoppingListElement, ShoppingList
 
 
 class RecipeListView(ListView):
@@ -55,6 +55,22 @@ class AddFavouritesView(View):
             recipe.favourites.remove(request.user)
         else:
             recipe.favourites.add(request.user)
+        return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+
+class ShoppingListView(ListView):
+    model = IngredientInRecipe
+    template_name = 'main/shopping_list.html'
+
+
+class AddToShoppingListView(View):
+    def get(self, request, pk):
+        recipe = get_object_or_404(Recipe, pk=pk)
+        user_shopping_list = ShoppingList.objects.get(user=request.user)
+
+        for i in recipe.ingredientinrecipe_set.all():
+            ShoppingListElement.objects.create(shopping_list=user_shopping_list, ingredient=i.ingredient,
+                                               quantity=i.quantity, unit=i.unit)
         return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
