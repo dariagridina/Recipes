@@ -89,7 +89,7 @@
 {% endblock %}
 
 {% block body %}
-
+{% csrf_token %}
     <h3 align="center">Shopping list</h3>
 
     <div class="container">
@@ -98,17 +98,19 @@
             <div class="col-8">
                 <div class="card card-white">
                     <div class="card-body">
-                        <form action="javascript:void(0);">
-                            <input type="text" class="form-control add-task" placeholder="Add ingredient...">
+                        <form  method="post" action="javascript:void(0);">
+                            <input type="text" class="form-control add-ingredient" placeholder="Add ingredient..." data-action="{% url 'shopping_list_element_list' %}">
                         </form>
                         <div class="todo-list">
-                            <div class="todo-item">
-                                <div class="alignment">
-                                    <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="bi bi-x-lg"></i></a>
-                                    <span>Create theme</span>
+                            {% for element in user.shopping_list.shoppinglistelement_set.all%}
+                                <div class="todo-item {% if element.completed %} complete {% endif %}" data-element-id="{{ element.id }}" data-action="{% url 'shopping_list_element_detail' element.id %}">
+                                    <div class="alignment">
+                                        <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="bi bi-x-lg"></i></a>
+                                        <span><strong>{{ element.quantity }} {{ element.unit }}</strong> {{ element.ingredient }}</span>
+                                    </div>
+                                    <div class="checker"><span class=""><input {% if element.completed %} checked {% endif %} type="checkbox"></span></div>
                                 </div>
-                                <div class="checker"><span class=""><input type="checkbox"></span></div>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

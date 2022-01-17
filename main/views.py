@@ -1,11 +1,13 @@
-from django.http import HttpResponseRedirect
+import re
+
+from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 
 from main.forms import SearchForm, RecipeForm, IngredientInRecipeFormSet, InstructionFormSet
-from main.models import Recipe, IngredientInRecipe, ShoppingListElement, ShoppingList
+from main.models import Recipe, IngredientInRecipe, ShoppingListElement, ShoppingList, Ingredient, Unit
 
 
 class RecipeListView(ListView):
@@ -45,6 +47,7 @@ class FavouritesListView(ListView):
 
     def get_context_data(self, **kwargs):
         kwargs['hide_header_search'] = True
+        kwargs['favourite_recipes'] = Recipe.objects.filter(favourites=self.request.user)
         return super(FavouritesListView, self).get_context_data(**kwargs)
 
 
@@ -62,6 +65,10 @@ class ShoppingListView(ListView):
     model = IngredientInRecipe
     template_name = 'main/shopping_list.html'
 
+    def get_context_data(self, **kwargs):
+        kwargs['shopping_list'] = self.request.user.shopping_list
+        return super(ShoppingListView, self).get_context_data(**kwargs)
+
 
 class AddToShoppingListView(View):
     def get(self, request, pk):
@@ -72,6 +79,45 @@ class AddToShoppingListView(View):
             ShoppingListElement.objects.create(shopping_list=user_shopping_list, ingredient=i.ingredient,
                                                quantity=i.quantity, unit=i.unit)
         return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+
+class ShoppingListElementView(View):
+    def put(self, request, pk):
+        element = get_object_or_404(ShoppingListElement, pk=pk, shopping_list__user=request.user)
+        element.completed = not element.completed
+        element.save()
+        return HttpResponse(status=200)
+
+    def delete(self, request, pk):
+        element = get_object_or_404(ShoppingListElement, pk=pk, shopping_list__user=request.user)
+        element.delete()
+        return HttpResponse(status=200)
+
+    def post(self, request):
+        user_input = request.POST['input']
+        regex = (r'((?P<name>[a-zA-Z\ ]+?)\s?(?P<quantity>\d+\.?,?\d*)\s?(?P<unit>[a-zA-Z]*\s*?|$)|'
+                 r'(?P<quantity2>\d+\.?,?\d*)\s?(?P<unit2>[a-zA-Z]*)(\ +?|$)(?P<name2>[a-zA-Z\ ]+)?)')
+        compiled = re.compile(regex)
+        match = compiled.search(user_input)
+        if match:
+            name = match.group('name') or match.group('name2')
+            quantity = match.group('quantity') or match.group('quantity2')
+            unit_name = match.group('unit') or match.group('unit2')
+        else:
+            name = user_input
+            quantity = 1
+            unit_name = 'item'
+
+        ingredient, _ = Ingredient.objects.get_or_create(name__iexact=name, defaults={
+            'name': name.capitalize()
+        })
+        unit, _ = Unit.objects.get_or_create(name__iexact=unit_name, defaults={
+            'name': unit_name.lower()
+        })
+        new_element = ShoppingListElement.objects.create(shopping_list=request.user.shopping_list,
+                                                         ingredient=ingredient, quantity=quantity, unit=unit)
+        return JsonResponse(status=200, data={'unit_name': unit.name, 'quantity': quantity,
+                                              'ingredient_name': new_element.ingredient.name})
 
 
 class NewRecipeView(CreateView):
@@ -96,15 +142,15 @@ class NewRecipeView(CreateView):
         if recipe_form.is_valid() and ingredient_formset.is_valid() and instruction_formset.is_valid():
             self.object = recipe_form.save()
             for form in ingredient_formset:
-                ingredient = form.save(commit=False)
-                ingredient.recipe = self.object
-                ingredient.save()
-
+                if form.cleaned_data:
+                    ingredient = form.save(commit=False)
+                    ingredient.recipe = self.object
+                    ingredient.save()
             for order, form in enumerate(instruction_formset):
-                instruction = form.save(commit=False)
-                instruction.recipe = self.object
-                instruction.order = order
-                if instruction.step:
+                if form.cleaned_data:
+                    instruction = form.save(commit=False)
+                    instruction.recipe = self.object
+                    instruction.order = order
                     instruction.save()
             return HttpResponseRedirect(self.get_success_url())
         else:

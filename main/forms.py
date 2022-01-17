@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import formset_factory
 
-from main.models import Recipe, IngredientInRecipe, Instruction
+from main.models import Recipe, IngredientInRecipe, Instruction, ShoppingListElement
 
 
 class SearchForm(forms.Form):
@@ -42,6 +42,17 @@ class InstructionForm(forms.ModelForm):
         super(InstructionForm, self).__init__(*args, **kwargs)
         self.fields['step'].widget.attrs.update({'class': 'form-control'})
         self.fields['step'].label = False
+
+
+# class NewShoppingListElementForm(forms.ModelForm):
+#     class Meta:
+#         model = ShoppingListElement
+#         fields = ['ingredient']
+#
+#     def __init__(self, *args, **kwargs):
+#         super(NewShoppingListElementForm, self).__init__(*args, **kwargs)
+#         self.fields['ingredient'].widget.attrs.update({'class': 'form-control add-ingredient'},
+#                                                       {'placeholder': 'Add ingredient...'})
 
 
 IngredientInRecipeFormSet = formset_factory(IngredientInRecipeForm, extra=0, min_num=1, validate_min=True)

@@ -29,20 +29,12 @@
             </div>
 
             {% if request.user.is_authenticated %}
-
-            {% if is_shopping_list %}
+                
                 <div class="col-1">
                     <div class="list-container">
                         <a href="{% url 'add_to_shopping_list' recipe.id %}" data-toggle='tooltip' title='Add to shopping list'><i class="bi bi-journal-plus"></i></a>
                     </div>
                 </div>
-            {% else %}
-                <div class="col-1">
-                    <div class="list-container">
-                        <a href="{% url 'add_to_shopping_list' recipe.id %}" data-toggle='tooltip' title='Remove from shopping list'><i class="bi bi-journal-check"></i></a>
-                    </div>
-                </div>
-            {% endif %}
 
                 {% if is_favourite %}
                     <div class="col-1">
@@ -97,7 +89,7 @@
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade active show" id="ingredients" role="tabpanel" aria-labelledby="ingredients-tab">
                             <ul>
-                                {% for ingredient_object in recipe.shoppinglist_set.all %}
+                                {% for ingredient_object in recipe.ingredientinrecipe_set.all %}
                                     <li><strong> {{ ingredient_object.quantity }} {{ ingredient_object.unit.name }}</strong> {{ ingredient_object.ingredient.name }} </li>
                                 {% endfor %}
                             </ul>

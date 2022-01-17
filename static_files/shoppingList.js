@@ -1,52 +1,69 @@
+function boughtIngredient() {
+    todoItem = $(this).parent().parent().parent();
+    token = $('input[name="csrfmiddlewaretoken"]').val()
+    jQuery.ajax({
+        type: "PUT",
+        url: todoItem.data('action'),
+        headers: {
+            "X-CSRFToken": token
+        },
+        data: {
+            'id': todoItem.data('element-id'),
+        },
+        success: function () {
+            todoItem.toggleClass('complete')
+        }
+    })
+}
+
+function removeIngredient() {
+    todoItem = $(this).parent().parent();
+    token = $('input[name="csrfmiddlewaretoken"]').val()
+    jQuery.ajax({
+        type: "DELETE",
+        url: todoItem.data('action'),
+        headers: {
+            "X-CSRFToken": token
+        },
+        success: function () {
+            todoItem.remove();
+        }
+    })
+}
+
+function addIngredient(ingredientInput) {
+    token = $('input[name="csrfmiddlewaretoken"]').val()
+    jQuery.ajax({
+        type: "POST",
+        url: ingredientInput.data('action'),
+        headers: {
+            "X-CSRFToken": token
+        },
+        data: {
+            'input': ingredientInput.val(),
+        },
+        success: function (data) {
+            window.location.reload();
+
+        }
+    })
+}
+
+function init(ingredient) {
+    $(ingredient).find('input').click(boughtIngredient);
+    $(ingredient).find('.remove-todo-item').click(removeIngredient);
+}
+
 $( document ).ready(function() {
 
     "use strict";
 
-    var todo = function() {
-        $('.todo-list .todo-item input').click(function() {
-            if($(this).is(':checked')) {
-                $(this).parent().parent().parent().toggleClass('complete');
-            } else {
-                $(this).parent().parent().parent().toggleClass('complete');
-            }
-        });
+    $('.todo-item').each(function (index) {init(this)});
 
-        $('.todo-nav .all-task').click(function() {
-            $('.todo-nav li.active').removeClass('active');
-            $(this).addClass('active');
-        });
-
-        $('#uniform-all-complete input').click(function() {
-            if($(this).is(':checked')) {
-                $('.todo-item .checker span:not(.checked) input').click();
-            } else {
-                $('.todo-item .checker span.checked input').click();
-            }
-        });
-
-        $('.remove-todo-item').click(function() {
-            $(this).parent().remove();
-        });
-    };
-
-    todo();
-
-    $(".add-task").keypress(function (e) {
+    $(".add-ingredient").keypress(function (e) {
         if ((e.which == 13)&&(!$(this).val().length == 0)) {
-            $('<div class="todo-item"><div class="alignment"><a href="javascript:void(0);" class="float-right remove-todo-item"><i class="bi bi-x-lg"></i></a><span>' + $(this).val() + '</span></div><div class="checker"><span class=""><input type="checkbox"></span></div></div>').insertAfter('.todo-list .todo-item:last-child');
+            addIngredient($(this));
             $(this).val('');
-        } else if(e.which == 13) {
-            alert('Please enter new ingredient');
         }
-        $(document).on('.todo-list .todo-item.added input').click(function() {
-            if($(this).is(':checked')) {
-                $(this).parent().parent().parent().toggleClass('complete');
-            } else {
-                $(this).parent().parent().parent().toggleClass('complete');
-            }
-        });
-        $('.todo-list .todo-item.added .remove-todo-item').click(function() {
-            $(this).parent().remove();
-        });
     });
 });

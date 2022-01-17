@@ -68,3 +68,4 @@ class ShoppingListElement(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.PROTECT)
     quantity = models.FloatField()
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
+    completed = models.BooleanField(default=False)
