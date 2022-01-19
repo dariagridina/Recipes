@@ -1,7 +1,30 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     Create new recipe
+{% endblock %}
+
+{% block css%}
+    <style>
+        label{
+            margin-top: 20px;
+        }
+        i.bigger-icon{
+            color: gray;
+            font-size:xx-large;
+        }
+        .ingredient-form{
+            margin-bottom: 50px;
+        }
+        .step-form{
+            margin-bottom: 40px;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "addFormToFormSet.js"%}"></script>
 {% endblock %}
 
 {% block body %}
@@ -9,64 +32,60 @@
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8">
-                <h2>Create new recipe</h2>
-                <hr>
-                <br>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Choose a name...">
-                </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Type a description..."></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="formFile" class="form-label">Upload image</label>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
-                <br>
-                <hr>
-                <br>
-                <h4>Ingredients</h4>
-                <br>
-                <div class="row g-2">
-                    <div class="col-md">
-                        <label for="exampleDataList" class="form-label">Ingredient</label>
-                        <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type an ingredient...">
-                        <datalist id="datalistOptions">
-                            <option value="Tomato">
-                            <option value="Salmon">
-                            <option value="Egg">
-                            <option value="Pepper">
-                            <option value="Salt">
-                        </datalist>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <br>
+                    <h2 align="center">Create new recipe</h2>
+                    <hr>
+                    <br>
+                    <div class="mb-3">
+                        {{ form }}
                     </div>
-                    <div class="col-md">
-                        <label for="exampleFormControlInput1" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="exampleFormControlInput1">
+                    <br>
+                    <hr>
+                    <h4>Ingredients</h4>
+                    <br>
+                    {{ ingredient_formset.management_form }}
+                    {% for form in ingredient_formset %}
+                        <div class="row g-2 ingredient-form">
+                            {{ form }}
+                        </div>
+                    {% endfor %}
+                    <div style="text-align: center">
+                        <i class="bi bi-plus-circle-dotted bigger-icon" id="add-ingredient-form"></i>
                     </div>
-                    <div class="col-md">
-                        <label for="exampleDataList" class="form-label">Unit</label>
-                        <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
-                        <datalist id="datalistOptions">
-                            <option value="item">
-                            <option value="gram">
-                            <option value="ml">
-                            <option value="Tbsp">
-                            <option value="tsp">
-                        </datalist>
+                    <script>
+                        $('#add-ingredient-form').click(function() {
+                            cloneMore('div.ingredient-form:last', 'ingredients');
+                        });
+                    </script>
+                    <hr>
+                    <br>
+                    <h4>Instruction</h4>
+                    <br>
+                    {{ step_formset.management_form }}
+                    <br>
+                    {% for form in step_formset %}
+                        <div class="row g-2 step-form">
+                            <span class="step-counter">Step {{ forloop.counter }}:</span>
+                            {{ form }}
+                        </div>
+                    {% endfor %}
+                    <div style="text-align: center">
+                        <i class="bi bi-plus-circle-dotted bigger-icon" id="add-step"></i>
                     </div>
-                </div>
-                <br>
-                <hr>
-                <br>
-                <h4>Instruction</h4>
-                <br>
-                <div class="mb-3">
-                    <label for="exampleFormControlTextarea1" class="form-label">Step 1</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                </div>
-                <hr>
+                    <script>
+                        $('#add-step').click(function() {
+                            cloneMore('div.step-form:last', 'steps');
+                        });
+                    </script>
+                    <hr>
+                    <div align="center">
+                        <a href="{% url 'recipe_list' %}" type="submit" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-outline-success" >Save</button>
+                    </div>
+                    <hr>
+                </form>
             </div>
             <div class="col-2"></div>
         </div>

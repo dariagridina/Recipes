@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.urls import reverse
 
 
 class Ingredient(models.Model):
@@ -17,6 +18,9 @@ class Recipe(models.Model):
     favourites = models.ManyToManyField(
         User, related_name='favourite', default=None, blank=True
     )
+
+    def get_absolute_url(self):
+        return reverse('recipe_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.name
@@ -42,11 +46,10 @@ class Instruction(models.Model):
 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     order = models.IntegerField()
-    description = models.TextField(max_length=512)
-
+    step = models.TextField(max_length=512)
 
     def __str__(self):
-        return self.description
+        return self.step
 
 
 class Unit(models.Model):
@@ -54,3 +57,15 @@ class Unit(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ShoppingList(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='shopping_list')
+
+
+class ShoppingListElement(models.Model):
+    shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.PROTECT)
+    quantity = models.FloatField()
+    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
+    completed = models.BooleanField(default=False)

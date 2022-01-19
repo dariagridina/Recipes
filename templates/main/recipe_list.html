@@ -27,7 +27,11 @@
             min-width:100%;
         }
         div.recipe-card {
-            height: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+        div.recipe-list {
+            display: flex;
         }
     </style>
 {% endblock %}
@@ -49,7 +53,7 @@
     </form>
     <div class="album py-5 bg-light">
         <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 recipe-list">
                 {% for recipe in recipe_list%}
                     <div class="col">
                         <div class="card shadow-sm">
@@ -60,9 +64,9 @@
 
                                         <div class="button-container">
                                             {% if recipe in favourite_recipes %}
-                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks-fill"></i></a>
+                                                <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Remove from favourites'><i class="bi bi-bookmarks-fill"></i></a>
                                             {% else %}
-                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks"></i></a>
+                                                <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Add to favourites'><i class="bi bi-bookmarks"></i></a>
                                             {% endif %}
                                         </div>
                                     {% endif %}
@@ -72,10 +76,9 @@
 
                                         <div class="button-container">
                                             {% if recipe in favourite_recipes %}
-                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks-fill"></i></a>
+                                                <a href="{% url 'add_to_favourites' recipe.id %}"data-toggle='tooltip' title='Remove from favourites'><i class="bi bi-bookmarks-fill"></i></a>
                                             {% else %}
-
-                                                <a href="{% url 'add_to_favourites' recipe.id %}"><i class="bi bi-bookmarks"></i></a>
+                                                <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Add to favourites'><i class="bi bi-bookmarks"></i></a>
                                             {% endif %}
                                         </div>
                                     {% endif %}
@@ -89,7 +92,7 @@
                                 <p class="card-text">{{ recipe.description|truncatewords:40}}</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                        <a href="{% url 'add_to_shopping_list' recipe.id %}" type="button" class="btn btn-sm btn-outline-secondary" data-toggle='tooltip' title='Add to shopping list'><i class="bi bi-journal-plus"></i></a>
                                         <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                     </div>
                                     <small class="text-muted">9 mins</small>
