@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import formset_factory
+from django.forms import inlineformset_factory
 
 from main.models import Recipe, IngredientInRecipe, Instruction
 
@@ -44,5 +44,7 @@ class InstructionForm(forms.ModelForm):
         self.fields['step'].label = False
 
 
-IngredientInRecipeFormSet = formset_factory(IngredientInRecipeForm, extra=0, min_num=1, validate_min=True)
-InstructionFormSet = formset_factory(InstructionForm, extra=0, min_num=1, validate_min=True)
+IngredientInRecipeFormSet = inlineformset_factory(model=IngredientInRecipe, parent_model=Recipe, form=IngredientInRecipeForm,
+                                                  extra=0, min_num=1, validate_min=True, can_delete_extra=False)
+InstructionFormSet = inlineformset_factory(model=Instruction, parent_model=Recipe, form=InstructionForm,
+                                           extra=0, min_num=1, validate_min=True, can_delete_extra=False)

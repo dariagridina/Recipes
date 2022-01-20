@@ -1,10 +1,11 @@
 import re
 
+from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from main.forms import SearchForm, RecipeForm, IngredientInRecipeFormSet, InstructionFormSet
 from main.models import Recipe, IngredientInRecipe, ShoppingListElement, ShoppingList, Ingredient, Unit
@@ -20,6 +21,7 @@ class RecipeListView(ListView):
 
     def get_queryset(self):
         queryset = super(RecipeListView, self).get_queryset()
+        queryset = queryset.filter(Q(user=self.request.user) | Q(user=None))
         form = SearchForm(self.request.GET)
         if form.is_valid():
             name = form.cleaned_data['name']
@@ -29,6 +31,11 @@ class RecipeListView(ListView):
 
 class RecipeDetailView(DetailView):
     model = Recipe
+
+    def get_queryset(self):
+        queryset = super(RecipeDetailView, self).get_queryset()
+        queryset = queryset.filter(Q(user=self.request.user) | Q(user=None))
+        return queryset
 
     def get_context_data(self, **kwargs):
         is_favourite = False
@@ -141,6 +148,8 @@ class NewRecipeView(CreateView):
 
         if recipe_form.is_valid() and ingredient_formset.is_valid() and instruction_formset.is_valid():
             self.object = recipe_form.save()
+            self.object.user = request.user
+            self.object.save()
             for form in ingredient_formset:
                 if form.cleaned_data:
                     ingredient = form.save(commit=False)
@@ -156,3 +165,85 @@ class NewRecipeView(CreateView):
         else:
             self.object = None
             return self.render_to_response(self.get_context_data(form=recipe_form))
+
+
+class EditRecipeUpdateView(UpdateView):
+    model = Recipe
+    template_name = 'main/edit_page.html'
+    form_class = RecipeForm
+
+    def get_context_data(self, **kwargs):
+        if self.request.POST:
+            kwargs['ingredient_formset'] = IngredientInRecipeFormSet(self.request.POST,
+                                                                     prefix='ingredients', instance=self.object)
+            kwargs['step_formset'] = InstructionFormSet(self.request.POST, prefix='steps', instance=self.object)
+        else:
+            kwargs['ingredient_formset'] = IngredientInRecipeFormSet(prefix='ingredients', instance=self.object)
+            kwargs['step_formset'] = InstructionFormSet(prefix='steps', instance=self.object)
+        return super(EditRecipeUpdateView, self).get_context_data(**kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        recipe_form = self.get_form()
+        ingredient_formset = IngredientInRecipeFormSet(request.POST, prefix='ingredients', instance=self.object)
+        instruction_formset = InstructionFormSet(request.POST, prefix='steps', instance=self.object)
+
+        if recipe_form.is_valid() and ingredient_formset.is_valid() and instruction_formset.is_valid():
+            self.object = recipe_form.save()
+            self.object.user = request.user
+            self.object.save()
+            for form in ingredient_formset:
+                if form.changed_data == ['DELETE']:
+                    form.instance.delete()
+                    continue
+                if form.cleaned_data:
+                    ingredient = form.save(commit=False)
+                    ingredient.recipe = self.object
+                    ingredient.save()
+            for order, form in enumerate(instruction_formset):
+                if form.changed_data == ['DELETE']:
+                    form.instance.delete()
+                    continue
+                if form.cleaned_data:
+                    instruction = form.save(commit=False)
+                    instruction.recipe = self.object
+                    instruction.order = order
+                    instruction.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            self.object = None
+            return self.render_to_response(self.get_context_data(form=recipe_form))
+
+
+class AddToMyRecipesView(View):
+
+    def get(self, request, pk):
+        recipe = get_object_or_404(Recipe, pk=pk)
+        recipe.id = None
+        recipe.user = request.user
+        recipe.save()
+
+        old_recipe = Recipe.objects.get(pk=pk)
+        for ing in old_recipe.ingredientinrecipe_set.all():
+            ing.id = None
+            ing.recipe = recipe
+            ing.save()
+
+        for step in old_recipe.instruction_set.all():
+            step.id = None
+            step.recipe = recipe
+            step.save()
+        return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+
+class MyRecipesListView(ListView):
+    model = Recipe
+    template_name = 'main/my_recipes.html'
+
+    def get_queryset(self):
+        return Recipe.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        kwargs['hide_header_search'] = True
+        kwargs['favourite_recipes'] = Recipe.objects.filter(favourites=self.request.user)
+        return super(MyRecipesListView, self).get_context_data(**kwargs)

@@ -9,14 +9,17 @@
     <style>
         .button-container a{
             font-size:xx-large;
-            color: green;
-            margin-left: 2cm;
+            color: red;t
+            margin-left: 15px;
         }
         .list-container a{
-            position: relative;
             font-size: xx-large;
             color: dimgrey;
-            margin-left: 3cm;
+            margin-left: 15px;
+        }
+        .flex-box{
+            display: flex;
+            justify-content: center;
         }
     </style>
 {% endblock %}
@@ -27,38 +30,41 @@
             <div class="col-9">
                 <p class="h1">{{ recipe.name }}</p>
             </div>
+            <div class="col-3">
+                <div class="flex-box">
+                    {% if request.user.is_authenticated %}
+                        {% if is_favourite %}
 
-            {% if request.user.is_authenticated %}
-                
-                <div class="col-1">
-                    <div class="list-container">
-                        <a href="{% url 'add_to_shopping_list' recipe.id %}" data-toggle='tooltip' title='Add to shopping list'><i class="bi bi-journal-plus"></i></a>
-                    </div>
-                </div>
-
-                {% if is_favourite %}
-                    <div class="col-1">
-                        <div class="button-container">
-                            <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Remove from favourites'><i class="bi bi-bookmarks-fill"></i></a>
+                            <div class="button-container">
+                                <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Remove from favourites'><i class="bi bi-heart-fill"></i></a>
+                            </div>
+                        {% else %}
+                            <div class="button-container">
+                                <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Add to favourites'><i class="bi bi-heart"></i></a>
+                            </div>
+                        {% endif %}
+                        {% if recipe.user == request.user %}
+                            <div class="list-container">
+                                <a href="{% url 'edit_page' recipe.id %}" data-toggle='tooltip' title='Edit'><i class="bi bi-pencil-square"></i></a>
+                            </div>
+                        {% else %}
+                            <div class="list-container">
+                                <a href="{% url 'add_to_my_recipes' recipe.id %}" data-toggle='tooltip' title='Add to my recipes'><i class="bi bi-journal-plus"></i></a>
+                            </div>
+                        {% endif %}
+                        <div class="list-container">
+                            <a href="{% url 'add_to_shopping_list' recipe.id %}" data-toggle='tooltip' title='Add to shopping list'><i class="bi bi-bag"></i></a>
                         </div>
-                    </div>
-                {% else %}
-                    <div class="col-1">
-                        <div class="button-container">
-                            <a href="{% url 'add_to_favourites' recipe.id %}" data-toggle='tooltip' title='Add to favourites'><i class="bi bi-bookmarks"></i></a>
-                        </div>
-                    </div>
-                {% endif %}
 
-            {% else %}
-                <div class="col-1">
-                    <div class="button-container">
-                        <a href="{% url 'sign_up' %}"><i class="bi bi-bookmarks"></i></a>
-                    </div>
+                    {% else %}
+                        <div class="button-container">
+                            <a href="{% url 'sign_up' %}"><i class="bi bi-heart"></i></a>
+                        </div>
+                    {% endif %}
+
                 </div>
-            {% endif %}
+            </div>
         </div>
-
         <div class="row mb-3">
             <div class="col-10">{% if recipe.description %} {{ recipe.description }}
             {% endif %}</div>

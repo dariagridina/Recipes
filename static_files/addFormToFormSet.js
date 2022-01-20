@@ -3,7 +3,7 @@ function incrementIntInStr(str, sep) {
     return splitedString[0] + sep + (parseInt(splitedString[1])+1) + sep + splitedString[2]
 }
 
-function cloneMore(selector, type) {
+function cloneMore(selector, type, parentType) {
     var newElement = $(selector).clone(true);
     var total = $('#id_' + type + '-TOTAL_FORMS').val();
 

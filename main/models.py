@@ -18,6 +18,7 @@ class Recipe(models.Model):
     favourites = models.ManyToManyField(
         User, related_name='favourite', default=None, blank=True
     )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('recipe_detail', kwargs={'pk': self.pk})
