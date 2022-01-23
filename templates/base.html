@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -42,9 +43,11 @@
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="{% url 'recipe_list' %}" class="nav-link px-2 link-dark"data-toggle='tooltip' title='All recipes'>All recipes</a></li>
-                <li><a href="{% url 'my_recipes' %}" class="nav-link px-2 link-dark"data-toggle='tooltip' title='My recipes'>My recipes</a></li>
-                <li><a href="{% url 'favourite_recipes' %}" class="nav-link px-2 link-dark" data-toggle='tooltip' title='Favourites'>Favourites</a></li>
-                <li><a href="{% url 'shopping_list' %}" class="nav-link px-2 link-dark" data-toggle='tooltip' title='Shopping list'>Shopping list</a></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'my_recipes' %}" class="nav-link px-2 link-dark"data-toggle='tooltip' title='My recipes'>My recipes</a></li>
+                    <li><a href="{% url 'favourite_recipes' %}" class="nav-link px-2 link-dark" data-toggle='tooltip' title='Favourites'>Favourites</a></li>
+                    <li><a href="{% url 'shopping_list' %}" class="nav-link px-2 link-dark" data-toggle='tooltip' title='Shopping list'>Shopping list</a></li>
+                {% endif %}
 
             </ul>
 
@@ -61,12 +64,18 @@
 
             <div class="dropdown text-end">
                 <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                    <img src='{% static 'placeholder_user.png' %}' width="32" height="32" class="rounded-circle">
                 </a>
                 <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                    <li><a class="dropdown-item" href="{% url 'new_recipe' %}">New recipe...</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a href=" {% url 'logout' %}" class="dropdown-item" href="#">Log out</a></li>
+                    {% if request.user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'new_recipe' %}">New recipe...</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a href=" {% url 'logout' %}" class="dropdown-item" href="#">Log out</a></li>
+                    {% else %}
+                        <li><a href=" {% url 'login' %}" class="dropdown-item" href="#">Log in</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a href=" {% url 'sign_up' %}" class="dropdown-item" href="#">Create account</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

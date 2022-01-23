@@ -36,12 +36,9 @@
                         {% for error in form.errors.password %}
                             <p class="error-message">{{ error }}</p>
                         {% endfor %}
-                        <div class="checkbox mb-3">
-                            <label>
-                                <input type="checkbox" value="remember-me"> Remember me
-                            </label>
-                        </div>
                         <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                    <span>or</span>
+                        <a href="{% url 'sign_up' %}" class="w-100 btn btn-lg btn-light">Create account</a>
                     </form>
                 </main>
             </div>
